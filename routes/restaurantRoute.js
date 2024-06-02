@@ -25,9 +25,35 @@ router.get("/get-restaurant/:id", async (request, response) => {
   try {
     const details = await Restaurant.findById({ _id: id });
     if (!details) {
-      return response.status(404).json({ message: "Post not found" });
+      return response
+        .status(404)
+        .json({ message: "Restaurant details not found" });
     }
     response.json(details);
+  } catch (err) {
+    console.log(err);
+    response.status(500).json({ message: "Internal server error" });
+  }
+});
+
+//Route for update restaurant information by id
+router.put("/update/:id", async (request, response) => {
+  const id = request.params.id;
+  try {
+    const updateDetails = await Restaurant.findByIdAndUpdate(
+      {
+        _id: id,
+      },
+      {
+        name: request.body.name,
+        address: request.body.address,
+        telephone: request.body.telephone,
+      }
+    );
+    if (!updateDetails) {
+      return response.status(404).json({ message: "Restaurant not found" });
+    }
+    response.json({ message: "Restaurant details update successfully..." });
   } catch (err) {
     console.log(err);
     response.status(500).json({ message: "Internal server error" });
