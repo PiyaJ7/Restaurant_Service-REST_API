@@ -29,7 +29,7 @@ router.get("/get-restaurant/:id", async (request, response) => {
         .status(404)
         .json({ message: "Restaurant details not found" });
     }
-    response.json(details);
+    response.status(200).json(details);
   } catch (err) {
     console.log(err);
     response.status(500).json({ message: "Internal server error" });
@@ -53,7 +53,24 @@ router.put("/update/:id", async (request, response) => {
     if (!updateDetails) {
       return response.status(404).json({ message: "Restaurant not found" });
     }
-    response.json({ message: "Restaurant details update successfully..." });
+    response
+      .status(200)
+      .json({ message: "Restaurant details update successfully..." });
+  } catch (err) {
+    console.log(err);
+    response.status(500).json({ message: "Internal server error" });
+  }
+});
+
+//Route for delete restaurant by id
+router.delete("/delete/:id", async (request, response) => {
+  const id = request.params.id;
+  try {
+    const deleteRestaurant = await Restaurant.findByIdAndDelete(id);
+    if (!deleteRestaurant) {
+      return response.status(404).json({ message: "Restaurant not found" });
+    }
+    response.status(200).json({ message: "Restaurant delete succesfully..." });
   } catch (err) {
     console.log(err);
     response.status(500).json({ message: "Internal server error" });
