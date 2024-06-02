@@ -1,4 +1,4 @@
-import express from "express";
+import express, { request, response } from "express";
 import { Restaurant } from "../models/restaurantModel.js";
 
 const router = express.Router();
@@ -15,7 +15,22 @@ router.post("/create", async (request, response) => {
     return response.status(201).send("Restaurant Created Successful...");
   } catch (err) {
     console.error("Error creating new restaurant", err);
-    return response.status(500).json({ error: "Internal server error" });
+    return response.status(500).json({ message: "Internal server error" });
+  }
+});
+
+//Route for retrieve Restaurant details by id
+router.get("/get-restaurant/:id", async (request, response) => {
+  const id = request.params.id;
+  try {
+    const details = await Restaurant.findById({ _id: id });
+    if (!details) {
+      return response.status(404).json({ message: "Post not found" });
+    }
+    response.json(details);
+  } catch (err) {
+    console.log(err);
+    response.status(500).json({ message: "Internal server error" });
   }
 });
 
