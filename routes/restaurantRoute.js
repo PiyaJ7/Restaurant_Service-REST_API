@@ -20,7 +20,7 @@ router.post("/create", async (request, response) => {
 });
 
 //Route for retrieve Restaurant details by id
-router.get("/get-restaurant/:id", async (request, response) => {
+router.get("/get-restaurantbyid/:id", async (request, response) => {
   const id = request.params.id;
   try {
     const details = await Restaurant.findById({ _id: id });
@@ -71,6 +71,20 @@ router.delete("/delete/:id", async (request, response) => {
       return response.status(404).json({ message: "Restaurant not found" });
     }
     response.status(200).json({ message: "Restaurant delete succesfully..." });
+  } catch (err) {
+    console.log(err);
+    response.status(500).json({ message: "Internal server error" });
+  }
+});
+
+//Route for listing all restaurants
+router.get("/get-restaurants", async (request, response) => {
+  try {
+    const restaurantDetails = await Restaurant.find();
+    if (!restaurantDetails) {
+      return response.status(404).json({ message: "No details to display..." });
+    }
+    response.status(200).json(restaurantDetails);
   } catch (err) {
     console.log(err);
     response.status(500).json({ message: "Internal server error" });
